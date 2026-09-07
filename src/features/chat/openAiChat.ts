@@ -4,7 +4,8 @@ import { Message } from "./messages";
 const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
 const GEMINI_API_URL = `https://googleapis.com{GEMINI_API_KEY}`;
 
-export async function getOpenAiChatResponse(messages: Message[]) {
+// index.tsxが呼び出している名前に合わせて関数を定義します
+export async function getChatResponseStream(messages: Message[]) {
   if (!GEMINI_API_KEY) {
     console.error("Gemini API Key is missing.");
     return "APIキーが設定されていません。";
