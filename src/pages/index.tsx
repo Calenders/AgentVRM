@@ -178,7 +178,7 @@ export default function Home() {
       ];
 
        // Gemini APIから一括で返答テキストを取得します
-      const replyText = await getChatResponseStream(messages, openAiKey).catch(
+      const aiTextLog = await getChatResponseStream(messages, openAiKey).catch(
         (e) => {
           console.error(e);
           return null;
