@@ -1,15 +1,13 @@
 import { Message } from "./messages";
 
-// Gemini APIの基本設定
-const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
-const GEMINI_API_URL = `https://googleapis.com{GEMINI_API_KEY}`;
-
-// index.tsxが呼び出している名前に合わせて関数を定義します
-export async function getChatResponseStream(messages: Message[]) {
-  if (!GEMINI_API_KEY) {
+export async function getChatResponseStream(messages: Message[], apiKey: string) {
+  // 画面の設定欄から入力されたキーを使用します
+  if (!apiKey) {
     console.error("Gemini API Key is missing.");
-    return "APIキーが設定されていません。";
+    return "設定画面からGeminiのAPIキーを入力してください。";
   }
+
+  const GEMINI_API_URL = `https://googleapis.com{apiKey}`;
 
   // チャット履歴をGeminiの形式に変換
   const contents = messages.map((msg) => ({
@@ -31,7 +29,7 @@ export async function getChatResponseStream(messages: Message[]) {
     }
 
     const data = await response.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "返答を得られませんでした。";
+    const reply = data.candidates?.?[0]?.content?.parts?.?[0]?.text || "返答を得られませんでした。";
     return reply;
   } catch (error) {
     console.error("Error calling Gemini API:", error);
