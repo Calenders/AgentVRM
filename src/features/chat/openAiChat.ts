@@ -9,7 +9,7 @@ export async function getChatResponseStream(messages: Message[], apiKey: string)
 
 // ⭕️ 最新の gemini-2.5-flash を指定
 const MODEL = "gemini-2.5-flash"; 
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/${MODEL}:generateContent?key=${apiKey}`;
 
   //　 チャット履歴をGeminiの形式に変換
   const contents = messages.map((msg) => ({
