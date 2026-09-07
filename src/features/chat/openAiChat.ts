@@ -7,7 +7,9 @@ export async function getChatResponseStream(messages: Message[], apiKey: string)
     return "設定画面からGeminiのAPIキーを入力してください。";
   }
 
-  const GEMINI_API_URL = `https://googleapis.com{apiKey}`;
+// ⭕️ 最新の gemini-2.5-flash を指定
+const MODEL = "gemini-2.5-flash"; 
+const GEMINI_API_URL = `https://googleapis.com{MODEL}:generateContent?key=${apiKey}`;
 
   //　 チャット履歴をGeminiの形式に変換
   const contents = messages.map((msg) => ({
