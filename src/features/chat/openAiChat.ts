@@ -9,7 +9,7 @@ export async function getChatResponseStream(messages: Message[], apiKey: string)
 
   const GEMINI_API_URL = `https://googleapis.com{apiKey}`;
 
-  // チャット履歴をGeminiの形式に変換
+  //　 チャット履歴をGeminiの形式に変換
   const contents = messages.map((msg) => ({
     role: msg.role === "assistant" ? "model" : "user",
     parts: [{ text: msg.content }],
