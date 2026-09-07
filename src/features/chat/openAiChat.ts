@@ -29,7 +29,7 @@ export async function getChatResponseStream(messages: Message[], apiKey: string)
     }
 
     const data = await response.json();
-    const reply = data.candidates?.?[0]?.content?.parts?.?[0]?.text || "返答を得られませんでした。";
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "返答を得られませんでした。";
     return reply;
   } catch (error) {
     console.error("Error calling Gemini API:", error);
