@@ -177,78 +177,45 @@ export default function Home() {
         ...messageLog,
       ];
 
-      const stream = await getChatResponseStream(messages, openAiKey).catch(
+            // Gemini APIから一括で返答テキストを取得します
+      const replyText = await getChatResponseStream(messages).catch(
         (e) => {
           console.error(e);
           return null;
         }
       );
-      if (stream == null) {
+
+      if (replyText == null || typeof replyText !== "string") {
         setChatProcessing(false);
         return;
       }
 
-      const reader = stream.getReader();
-      let receivedMessage = "";
-      let aiTextLog = "";
-      let tag = "";
-      const sentences = new Array<string>();
       try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+        // 返ってきたメッセージを画面の履歴と字幕にセットします
+        setAssistantMessage(replyText);
+        setSubtitle(replyText);
 
-          receivedMessage += value;
+        // テキストをキャラクターのセリフ（台本）データに変換します
+        const aiTalks = textsToScreenplay([replyText], koeiroParam);
 
-          const tagMatch = receivedMessage.match(/^\[(.*?)\]/);
-          if (tagMatch && tagMatch[0]) {
-            tag = tagMatch[0];
-            receivedMessage = receivedMessage.slice(tag.length);
-          }
-
-          const sentenceMatch = receivedMessage.match(
-            /^(.+[。．！？\n]|.{10,}[、,])/
-          );
-          if (sentenceMatch && sentenceMatch[0]) {
-            const sentence = sentenceMatch[0];
-            sentences.push(sentence);
-            receivedMessage = receivedMessage
-              .slice(sentence.length)
-              .trimStart();
-
-            if (
-              !sentence.replace(
-                /^[\s\[\(\{「［（【『〈《〔｛«‹〘〚〛〙›»〕》〉』】）］」\}\)\]]+$/g,
-                ""
-              )
-            ) {
-              continue;
+        if (aiTalks && aiTalks.length > 0) {
+          // Voicevox等を使ってキャラクターに声を喋らせます
+          await speakCharacterWithVoicevox(
+            aiTalks[0],
+            viewer,
+            { speakerId: 1, speedScale: 1.0 },
+            () => {
+              // 再生開始時の処理（必要に応じて記述）
             }
-
-            const aiText = `${tag} ${sentence}`;
-            const aiTalks = textsToScreenplay([aiText], koeiroParam);
-            aiTextLog += aiText;
-
-            const currentAssistantMessage = sentences.join(" ");
-            // ★ 字幕表示: 再生開始時にsetSubtitle、awaitで消去
-            await speakCharacterWithVoicevox(
-              aiTalks[0],
-              viewer,
-              { speakerId: 1, speedScale: 1.0 },
-              () => {
-                setAssistantMessage(currentAssistantMessage);
-                setSubtitle(aiTalks[0].talk.message);
-              }
-            );
-          }
+          );
         }
       } catch (e) {
-        setChatProcessing(false);
         console.error(e);
       } finally {
-        reader.releaseLock();
-        setSubtitle(""); // 全ての発話が終わったら字幕を消す
+        setChatProcessing(false);
+        setSubtitle(""); // 発話が終わったら字幕を消します
       }
+
 
       const messageLogAssistant: Message[] = [
         ...messageLog,
