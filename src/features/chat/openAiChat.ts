@@ -7,9 +7,9 @@ export async function getChatResponseStream(messages: Message[], apiKey: string)
     return "設定画面からGeminiのAPIキーを入力してください。";
   }
 
-// ⭕️ 最新の gemini-2.5-flash を指定
+// ⭕️  gemini-1.5-flash を指定
 const MODEL = "gemini-1.5-flash"; 
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
   //　 チャット履歴をGeminiの形式に変換
   const contents = messages.map((msg) => ({
@@ -22,6 +22,8 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+       // ⭕️ マニュアル通り、安全な通信データ枠（ヘッダー）に変数として渡します
+        "x-goog-api-key": apiKey, 
       },
       body: JSON.stringify({ contents }),
     });
