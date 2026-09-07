@@ -1,4 +1,4 @@
-import { Message } from "./messages";
+import { Message } from "../messages/messages";
 
 export async function getChatResponseStream(messages: Message[], apiKey: string) {
   // 画面の設定欄から入力されたキーを使用します
