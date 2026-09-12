@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .map((msg) => `${msg.role === "assistant" ? "Assistant" : "User"}: ${msg.content}`)
     .join("\n");
 
-  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta2/interactions`;
+  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/interactions`;
 
   try {
     const response = await fetch(GEMINI_API_URL, {
@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         "x-goog-api-key": apiKey,
       },
       body: JSON.stringify({
-        model: "gemini-3.6-flash",
+        model: "gemini-3.5-flash",
         input: conversationText,
       }),
     });
