@@ -177,8 +177,7 @@ export default function Home() {
         ...messageLog,
       ];
 
-      // ⭕️【追加】この1行を、const replyText のすぐ上の行に新しく書き加えてください
-      console.log("=== API KEY DUMP ===", openAiKey);
+      
        // Gemini APIから一括で返答テキストを取得します
       const replyText = await getChatResponseStream(messages, openAiKey).catch(
         (e) => {
