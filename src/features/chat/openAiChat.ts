@@ -1,42 +1,31 @@
 import { Message } from "../messages/messages";
 
+// 利用者ごとのAPIキーを設定画面から受け取り、messagesと一緒に自分のサーバー(/api/gemini)へ送る。
+// ★ここではキーをGoogleへ直接送らない。必ず自分のサーバー(/api/gemini)経由にすることで、
+//   JSバンドルにキーを焼き込む必要がなくなる（＝全訪問者に共通鍵が見える事故を防げる）。
 export async function getChatResponseStream(messages: Message[], apiKey: string) {
-  // 画面の設定欄から入力されたキーを使用します
   if (!apiKey) {
     console.error("Gemini API Key is missing.");
     return "設定画面からGeminiのAPIキーを入力してください。";
   }
 
-// ⭕️  gemini-1.5-flash を指定
-const MODEL = "gemini-1.5-flash"; 
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
-
-  //　 チャット履歴をGeminiの形式に変換
-  const contents = messages.map((msg) => ({
-    role: msg.role === "assistant" ? "model" : "user",
-    parts: [{ text: msg.content }],
-  }));
-
   try {
-    const response = await fetch(GEMINI_API_URL, {
+    const response = await fetch("/api/gemini", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-       // ⭕️ マニュアル通り、安全な通信データ枠（ヘッダー）に変数として渡します
-        "x-goog-api-key": apiKey, 
-      },
-      body: JSON.stringify({ contents }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages, apiKey }),
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.statusText}`);
+      const errorData = await response.json().catch(() => ({}));
+      console.error("API route error:", errorData);
+      return errorData.error || "通信エラーが発生しました。";
     }
 
     const data = await response.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "返答を得られませんでした。";
-    return reply;
+    return data.reply as string;
   } catch (error) {
-    console.error("Error calling Gemini API:", error);
+    console.error("Error calling /api/gemini:", error);
     return "通信エラーが発生しました。";
   }
 }
