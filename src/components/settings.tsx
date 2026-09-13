@@ -39,7 +39,7 @@ export const Settings = ({
   onChangeVoicevoxApiKey,   // ★追加
 }: Props) => {
   return (
-    <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
+    <div className="absolute z-40 w-full h-full bg-white/95 backdrop-blur ">
       <div className="absolute m-24">
         <IconButton
           iconName="24/Close"
@@ -48,7 +48,7 @@ export const Settings = ({
         ></IconButton>
       </div>
       <div className="max-h-full overflow-auto">
-        <div className="text-text1 max-w-3xl mx-auto px-24 py-64 ">
+        <div className="text-gray-900 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">設定</div>
           <div className="my-24">
             <div className="my-16 typography-20 font-bold">OpenAI API キー</div>
