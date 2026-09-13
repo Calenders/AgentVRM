@@ -193,12 +193,14 @@ export default function Home() {
       }
 
       try {
-        // 返ってきたメッセージを画面の履歴と字幕にセットします
+        // テキストをキャラクターのセリフ（台本）データに変換します
+        const aiTalks = textsToScreenplay([replyText], koeiroParam);
+        // タグ除去後のクリーンなテキストを画面表示用に使う
+        const cleanText = aiTalks.map((talk) => talk.talk.message).join("");
         setAssistantMessage(replyText);
         setSubtitle(replyText);
 
-        // テキストをキャラクターのセリフ（台本）データに変換します
-        const aiTalks = textsToScreenplay([replyText], koeiroParam);
+        
 
         if (aiTalks && aiTalks.length > 0) {
           // Voicevox等を使ってキャラクターに声を喋らせます
