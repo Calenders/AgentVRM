@@ -15,24 +15,28 @@ type Props = {
   systemPrompt: string;
   koeiroParam: KoeiroParam;
   koeiromapKey: string;
+  voicevoxApiKey: string;                                              // ★追加
   onClickClose: () => void;
   onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onChangeKoeiroParam: (x: number, y: number) => void;
   onClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeVoicevoxApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void; // ★追加
 };
 export const Settings = ({
   openAiKey,
   systemPrompt,
   koeiroParam,
   koeiromapKey,
+  voicevoxApiKey,           // ★追加
   onClickClose,
   onChangeSystemPrompt,
   onChangeAiKey,
   onChangeKoeiroParam,
   onClickResetSystemPrompt,
   onChangeKoeiromapKey,
+  onChangeVoicevoxApiKey,   // ★追加
 }: Props) => {
   return (
     <div className="absolute z-40 w-full h-full bg-white/80 backdrop-blur ">
@@ -85,6 +89,23 @@ export const Settings = ({
               onChange={onChangeSystemPrompt}
               className="px-16 py-8  bg-surface1 hover:bg-surface1-hover h-168 rounded-8 w-full"
             ></textarea>
+          </div>
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">VOICEVOX API キー</div>
+            <input
+              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+              type="text"
+              placeholder="..."
+              value={voicevoxApiKey}
+              onChange={onChangeVoicevoxApiKey}
+            />
+            <div className="my-16">
+              <Link
+                url="https://su-shiki.com/api/"
+                label="こちらのサイト"
+              />
+              でGoogleアカウントを使ってAPIキーを取得し、入力してください。
+            </div>
           </div>
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">声の調整</div>
