@@ -51,8 +51,9 @@ export async function synthesizeVoiceVoicevox(params: {
   text: string;
   speakerId: number;
   speedScale?: number;
+  apiKey: string;
 }) {
-  const { text, speakerId, speedScale = 1.0 } = params;
+  const { text, speakerId, speedScale = 1.0, apiKey } = params;
   const res = await fetch("/api/voicevox_tts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -60,6 +61,7 @@ export async function synthesizeVoiceVoicevox(params: {
       text,
       speakerId,
       speedScale,
+      apiKey,
     }),
   });
   const data = (await res.json()) as any;
