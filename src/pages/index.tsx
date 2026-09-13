@@ -5,6 +5,7 @@ import {
   Message,
   textsToScreenplay,
   Screenplay,
+  splitSentence,
 } from "@/features/messages/messages";
 import { speakCharacterWithVoicevox } from "@/features/messages/speakCharacter";
 import { MessageInputContainer } from "@/components/messageInputContainer";
@@ -194,7 +195,8 @@ export default function Home() {
 
       try {
         // テキストをキャラクターのセリフ（台本）データに変換します
-        const aiTalks = textsToScreenplay([replyText], koeiroParam);
+        // 修正後
+        const aiTalks = textsToScreenplay(splitSentence(replyText), koeiroParam);
         // タグ除去後のクリーンなテキストを画面表示用に使う
         const cleanText = aiTalks.map((talk) => talk.talk.message).join("");
         setAssistantMessage(cleanText);
@@ -202,15 +204,22 @@ export default function Home() {
 
         
 
+        // 修正後
         if (aiTalks && aiTalks.length > 0) {
-          // Voicevox等を使ってキャラクターに声を喋らせます
-          await speakCharacterWithVoicevox(
-            aiTalks[0],
-            viewer,
-            { speakerId: 20, speedScale: 1.0, apiKey: voicevoxApiKey },
-            () => {
-              // 再生開始時の処理（必要に応じて記述）
-            }
+          // Voicevox等を使って、文章ごとに順番にキャラクターに声を喋らせます
+          await Promise.all(
+            aiTalks.map((talk, i) =>
+              speakCharacterWithVoicevox(
+                talk,
+                viewer,
+                { speakerId: 20, speedScale: 1.0, apiKey: voicevoxApiKey },
+                i === 0
+                  ? () => {
+                      // 最初の一文の再生開始時の処理（必要に応じて記述）
+                    }
+                  : undefined
+              )
+            )
           );
         }
       } catch (e) {
