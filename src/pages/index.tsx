@@ -139,7 +139,7 @@ export default function Home() {
     ) => {
       console.log("[DEBUG] handleSpeakAi called", screenplay);
       // VOICEVOXで喋らせる
-      speakCharacterWithVoicevox(screenplay, viewer, { speakerId: 1, speedScale: 1.0, apiKey: voicevoxApiKey }, onStart, onEnd);
+      speakCharacterWithVoicevox(screenplay, viewer, { speakerId: 20, speedScale: 1.0, apiKey: voicevoxApiKey }, onStart, onEnd);
     },
     [viewer]
   );
@@ -205,7 +205,7 @@ export default function Home() {
           await speakCharacterWithVoicevox(
             aiTalks[0],
             viewer,
-            { speakerId: 1, speedScale: 1.0, apiKey: voicevoxApiKey },
+            { speakerId: 20, speedScale: 1.0, apiKey: voicevoxApiKey },
             () => {
               // 再生開始時の処理（必要に応じて記述）
             }
