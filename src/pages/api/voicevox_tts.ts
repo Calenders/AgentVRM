@@ -53,7 +53,8 @@ export default async function handler(
     const arrayBuffer = await response.arrayBuffer();
     const base64Audio = Buffer.from(arrayBuffer).toString("base64");
 
-    res.status(200).json({ audio: base64Audio });
+    // フロントエンドが期待する data:audio/xxx;base64,... の形式に変換
+    res.status(200).json({ audio: `data:audio/wav;base64,${base64Audio}` });
   } catch (e: any) {
     console.error("VOICEVOXクラウドAPI 通信エラー:", e);
     res.status(500).json({ error: e.message || "VOICEVOX合成エラー" });
