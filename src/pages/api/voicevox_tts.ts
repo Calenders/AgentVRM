@@ -1,12 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { voicevoxTTS } from "@/features/voicevox/voicevox";
 
-// .envからVOICEVOXエンジンURLを取得
-const VOICEVOX_ENGINE_URL =
-  process.env.VOICEVOX_ENGINE_URL || "http://localhost:50021";
+// クラウド版VOICEVOX API（非公式・su-shiki.com）のエンドポイント
+const VOICEVOX_CLOUD_URL = "https://deprecatedapis.tts.quest/v2/voicevox/audio/";
 
 type Data = {
-  audio: string;
+  audio: string; // base64エンコードされた音声データ
 };
 
 export default async function handler(
@@ -18,22 +16,46 @@ export default async function handler(
     return;
   }
 
-  const { text, speakerId, speedScale } = req.body;
+  const { text, speakerId, speedScale, apiKey } = req.body;
 
   if (!text || typeof speakerId !== "number") {
     res.status(400).json({ error: "textとspeakerIdは必須です" });
     return;
   }
 
+  // ★利用者ごとのAPIキーをリクエストのたびに受け取る。
+  //   Geminiのキーと同様、サーバー側には保存しない・ログに出さない。
+  if (!apiKey) {
+    res.status(400).json({ error: "VOICEVOXのAPIキーが送信されていません。設定画面から入力してください。" });
+    return;
+  }
+
   try {
-    const result = await voicevoxTTS(
-      text,
-      speakerId,
-      speedScale ?? 1.0,
-      VOICEVOX_ENGINE_URL
-    );
-    res.status(200).json(result);
+    const params = new URLSearchParams({
+      key: apiKey,
+      speaker: String(speakerId),
+      speed: String(speedScale ?? 1.0),
+      text: text,
+    });
+
+    const response = await fetch(`${VOICEVOX_CLOUD_URL}?${params.toString()}`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("VOICEVOXクラウドAPI error:", errorText);
+      res.status(response.status).json({ error: "音声合成に失敗しました。" });
+      return;
+    }
+
+    // 音声データ(バイナリ)をbase64文字列に変換してフロントに返す
+    const arrayBuffer = await response.arrayBuffer();
+    const base64Audio = Buffer.from(arrayBuffer).toString("base64");
+
+    res.status(200).json({ audio: base64Audio });
   } catch (e: any) {
+    console.error("VOICEVOXクラウドAPI 通信エラー:", e);
     res.status(500).json({ error: e.message || "VOICEVOX合成エラー" });
   }
 }
