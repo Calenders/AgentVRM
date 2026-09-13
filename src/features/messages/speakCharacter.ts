@@ -9,13 +9,14 @@ import { Talk } from "./messages";
  */
 export const fetchAudioVoicevox = async (
   talk: Talk,
-  options: { speakerId: number; speedScale?: number }
+  options: { speakerId: number; speedScale?: number; apiKey: string }
 ): Promise<ArrayBuffer | null> => {
   try {
     const res = await synthesizeVoiceVoicevox({
       text: talk.message,
       speakerId: options.speakerId,
       speedScale: options.speedScale,
+      apiKey: options.apiKey,
     });
     if (!res.audio) throw new Error("VOICEVOX API did not return audio");
     const base64 = res.audio.split(",")[1];
