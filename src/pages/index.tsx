@@ -258,12 +258,14 @@ export default function Home() {
           systemPrompt={systemPrompt}
           koeiroParam={koeiroParam}
           koeiromapKey={koeiromapKey}
+          voicevoxApiKey={voicevoxApiKey}                                          // ★追加
           onClickClose={() => setShowSettings(false)}
           onChangeAiKey={(e) => setOpenAiKey(e.target.value)}
           onChangeSystemPrompt={(e) => setSystemPrompt(e.target.value)}
           onChangeKoeiroParam={(x, y) => setKoeiroParam({ speakerX: x, speakerY: y })}
           onClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
           onChangeKoeiromapKey={(e) => setKoeiromapKey(e.target.value)}
+          onChangeVoicevoxApiKey={(e) => setVoicevoxApiKey(e.target.value)}        // ★追加
         />
       )}
     </div>
