@@ -21,6 +21,7 @@ export default function Home() {
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
   const [openAiKey, setOpenAiKey] = useState("");
   const [koeiromapKey, setKoeiromapKey] = useState("");
+  const [voicevoxApiKey, setVoicevoxApiKey] = useState(""); // ★追加
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
@@ -138,7 +139,7 @@ export default function Home() {
     ) => {
       console.log("[DEBUG] handleSpeakAi called", screenplay);
       // VOICEVOXで喋らせる
-      speakCharacterWithVoicevox(screenplay, viewer, { speakerId: 1, speedScale: 1.0 }, onStart, onEnd);
+      speakCharacterWithVoicevox(screenplay, viewer, { speakerId: 1, speedScale: 1.0, apiKey: voicevoxApiKey }, onStart, onEnd);
     },
     [viewer]
   );
@@ -204,7 +205,7 @@ export default function Home() {
           await speakCharacterWithVoicevox(
             aiTalks[0],
             viewer,
-            { speakerId: 1, speedScale: 1.0 },
+            { speakerId: 1, speedScale: 1.0, apiKey: voicevoxApiKey },
             () => {
               // 再生開始時の処理（必要に応じて記述）
             }
@@ -226,7 +227,7 @@ export default function Home() {
       setChatLog(messageLogAssistant);
       setChatProcessing(false);
     },
-    [systemPrompt, chatLog, openAiKey, koeiroParam, viewer, isFirstInteraction]
+    [systemPrompt, chatLog, openAiKey, koeiroParam, viewer, isFirstInteraction, voicevoxApiKey]
   );
 
   return (
