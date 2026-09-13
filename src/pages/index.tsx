@@ -197,8 +197,8 @@ export default function Home() {
         const aiTalks = textsToScreenplay([replyText], koeiroParam);
         // タグ除去後のクリーンなテキストを画面表示用に使う
         const cleanText = aiTalks.map((talk) => talk.talk.message).join("");
-        setAssistantMessage(replyText);
-        setSubtitle(replyText);
+        setAssistantMessage(cleanText);
+        setSubtitle(cleanText);
 
         
 
