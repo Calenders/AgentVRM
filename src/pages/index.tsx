@@ -282,7 +282,6 @@ export default function Home() {
           onClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
           onChangeKoeiromapKey={(e) => setKoeiromapKey(e.target.value)}
           onChangeVoicevoxApiKey={(e) => setVoicevoxApiKey(e.target.value)}        // ★追加
-          onChangeVoicevoxApiKey={(e) => setVoicevoxApiKey(e.target.value)}        // ★追加
           onChangeGeminiModel={(e) => setGeminiModel(e.target.value)}              // ★追加
         />
       )}
