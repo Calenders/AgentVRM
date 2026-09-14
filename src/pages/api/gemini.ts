@@ -18,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { messages, apiKey } = req.body as {
     messages: ChatMessage[];
     apiKey: string;
+    model?: string;
   };
 
   if (!apiKey) {
@@ -46,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         "x-goog-api-key": apiKey,
       },
       body: JSON.stringify({
-        model: "gemini-3.5-flash",
+        model: model || "gemini-3.5-flash",
         input: conversationText,
       }),
     });
