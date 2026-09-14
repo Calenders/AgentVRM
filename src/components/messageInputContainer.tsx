@@ -32,34 +32,40 @@ export const MessageInputContainer = ({
   const { viewer } = useContext(ViewerContext);
 
   // 音声認識の結果を処理する
+  // 修正後
   const handleRecognitionResult = useCallback(
     (event: SpeechRecognitionEvent) => {
-      const text = event.results[0][0].transcript;
-      setUserMessage(text);
-
-      // 発言の終了時
-      if (event.results[0].isFinal) {
-        setUserMessage(text);
-        // 返答文の生成を開始
-        onChatProcessStart(text);
+      // すべての認識結果（確定分＋認識中の分）をつなげて表示する
+      let combinedText = "";
+      for (let i = 0; i < event.results.length; i++) {
+        combinedText += event.results[i][0].transcript;
       }
+      setUserMessage(combinedText);
+    // ★ここでは自動送信しない。ユーザーがマイクボタンを再度押すまで待つ
     },
-    [onChatProcessStart]
+    []
   );
 
-  // 無音が続いた場合も終了する
+  // 修正後
   const handleRecognitionEnd = useCallback(() => {
     setIsMicRecording(false);
-  }, []);
-
+    setUserMessage((currentText) => {
+      if (currentText.trim() !== "") {
+        onChatProcessStart(currentText);
+      }
+      return currentText;
+    });
+  }, [onChatProcessStart]);
+// 修正後
   const handleClickMicButton = useCallback(() => {
     if (isMicRecording) {
-      speechRecognition?.abort();
+      // 録音停止 → その時点までの認識結果を確定して送信する
+      speechRecognition?.stop();
       setIsMicRecording(false);
-
       return;
     }
 
+    setUserMessage("");
     speechRecognition?.start();
     setIsMicRecording(true);
   }, [isMicRecording, speechRecognition]);
@@ -115,7 +121,7 @@ export const MessageInputContainer = ({
     const recognition = new SpeechRecognition();
     recognition.lang = "ja-JP";
     recognition.interimResults = true; // 認識の途中結果を返す
-    recognition.continuous = false; // 発言の終了時に認識を終了する
+    recognition.continuous = true; // 少し間が空いても認識を継続する
 
     recognition.addEventListener("result", handleRecognitionResult);
     recognition.addEventListener("end", handleRecognitionEnd);
