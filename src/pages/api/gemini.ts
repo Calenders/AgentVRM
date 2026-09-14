@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // 1. 利用者ごとのAPIキーはリクエストのたびにクライアントから受け取る。
   //    ★このキーはサーバー側でログに出さない・DBやファイルに保存しない・
   //      リクエスト処理が終わったら破棄する（メモリに残さない）ことが鉄則。
-  const { messages, apiKey } = req.body as {
+  const { messages, apiKey, model } = req.body as {
     messages: ChatMessage[];
     apiKey: string;
     model?: string;
