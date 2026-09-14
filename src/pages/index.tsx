@@ -181,9 +181,9 @@ export default function Home() {
 
       
        // Gemini APIから一括で返答テキストを取得します
-      // 修正後（一時的に固定モデル名を指定）
+      const [geminiModel, setGeminiModel] = useState("gemini-3.5-flash-lite"); // ★デフォルトを軽量版に
       // 修正後
-      const replyText = await getChatResponseStream(messages, openAiKey, "gemini-3.5-flash-lite").catch(
+      const replyText = await getChatResponseStream(messages, openAiKey, geminiModel).catch(
         (e) => {
           console.error(e);
           return null;
@@ -240,7 +240,8 @@ export default function Home() {
       setChatLog(messageLogAssistant);
       setChatProcessing(false);
     },
-    [systemPrompt, chatLog, openAiKey, koeiroParam, viewer, isFirstInteraction, voicevoxApiKey]
+    // 修正後
+    [systemPrompt, chatLog, openAiKey, koeiroParam, viewer, isFirstInteraction, voicevoxApiKey, geminiModel]
   );
 
   return (
