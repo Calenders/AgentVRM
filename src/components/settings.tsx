@@ -55,7 +55,6 @@ export const Settings = ({
         <div className="text-gray-900 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">設定</div>
           <div className="my-24">
-            // 修正後
             <div className="my-16 typography-20 font-bold">Google Gemini API キー</div>
             <input
               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
