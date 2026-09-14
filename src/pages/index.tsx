@@ -182,7 +182,8 @@ export default function Home() {
       
        // Gemini APIから一括で返答テキストを取得します
       // 修正後（一時的に固定モデル名を指定）
-      const replyText = await getChatResponseStream(messages, openAiKey, "gemini-2.5-flash-lite").catch(
+      // 修正後
+      const replyText = await getChatResponseStream(messages, openAiKey, "gemini-3.5-flash-lite").catch(
         (e) => {
           console.error(e);
           return null;
