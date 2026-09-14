@@ -23,6 +23,7 @@ export default function Home() {
   const [openAiKey, setOpenAiKey] = useState("");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxApiKey, setVoicevoxApiKey] = useState(""); // ★追加
+  const [geminiModel, setGeminiModel] = useState("gemini-3.5-flash-lite"); // ★デフォルトを軽量版に
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
@@ -181,7 +182,7 @@ export default function Home() {
 
       
        // Gemini APIから一括で返答テキストを取得します
-      const [geminiModel, setGeminiModel] = useState("gemini-3.5-flash-lite"); // ★デフォルトを軽量版に
+
       // 修正後
       const replyText = await getChatResponseStream(messages, openAiKey, geminiModel).catch(
         (e) => {
@@ -273,6 +274,7 @@ export default function Home() {
           koeiroParam={koeiroParam}
           koeiromapKey={koeiromapKey}
           voicevoxApiKey={voicevoxApiKey}                                          // ★追加
+          geminiModel={geminiModel}                                                // ★追加
           onClickClose={() => setShowSettings(false)}
           onChangeAiKey={(e) => setOpenAiKey(e.target.value)}
           onChangeSystemPrompt={(e) => setSystemPrompt(e.target.value)}
@@ -280,6 +282,8 @@ export default function Home() {
           onClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
           onChangeKoeiromapKey={(e) => setKoeiromapKey(e.target.value)}
           onChangeVoicevoxApiKey={(e) => setVoicevoxApiKey(e.target.value)}        // ★追加
+          onChangeVoicevoxApiKey={(e) => setVoicevoxApiKey(e.target.value)}        // ★追加
+          onChangeGeminiModel={(e) => setGeminiModel(e.target.value)}              // ★追加
         />
       )}
     </div>
