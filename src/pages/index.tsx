@@ -31,7 +31,7 @@ export default function Home() {
   const [isFirstInteraction, setIsFirstInteraction] = useState(true);
 
   const [subtitle, setSubtitle] = useState("");
-  const [showSubtitle, setShowSubtitle] = useState(true); // ★ 字幕表示state追加
+  const [showSubtitle, setShowSubtitle] = useState(false); // ★ 字幕表示state追加
 
   const [showSettings, setShowSettings] = useState(false);
 
