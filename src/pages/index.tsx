@@ -202,8 +202,7 @@ export default function Home() {
         const aiTalks = textsToScreenplay(splitSentence(replyText), koeiroParam);
         // タグ除去後のクリーンなテキストを画面表示用に使う
         const cleanText = aiTalks.map((talk) => talk.talk.message).join("");
-        setAssistantMessage(cleanText);
-        setSubtitle(cleanText);
+        
 
         
 
@@ -218,7 +217,9 @@ export default function Home() {
                 { speakerId: 20, speedScale: 1.0, apiKey: voicevoxApiKey },
                 i === 0
                   ? () => {
-                      // 最初の一文の再生開始時の処理（必要に応じて記述）
+                      // 最初の音声の再生開始と同時にテキスト表示する
+                      setAssistantMessage(cleanText);
+                      setSubtitle(cleanText);
                     }
                   : undefined
               )
