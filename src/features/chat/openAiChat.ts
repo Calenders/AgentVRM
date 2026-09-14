@@ -3,7 +3,8 @@ import { Message } from "../messages/messages";
 // 利用者ごとのAPIキーを設定画面から受け取り、messagesと一緒に自分のサーバー(/api/gemini)へ送る。
 // ★ここではキーをGoogleへ直接送らない。必ず自分のサーバー(/api/gemini)経由にすることで、
 //   JSバンドルにキーを焼き込む必要がなくなる（＝全訪問者に共通鍵が見える事故を防げる）。
-export async function getChatResponseStream(messages: Message[], apiKey: string) {
+// 修正後
+export async function getChatResponseStream(messages: Message[], apiKey: string, model: string) {
   if (!apiKey) {
     console.error("Gemini API Key is missing.");
     return "設定画面からGeminiのAPIキーを入力してください。";
@@ -13,7 +14,8 @@ export async function getChatResponseStream(messages: Message[], apiKey: string)
     const response = await fetch("/api/gemini", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages, apiKey }),
+      // 修正後
+      body: JSON.stringify({ messages, apiKey, model }),
     });
 
     if (!response.ok) {
