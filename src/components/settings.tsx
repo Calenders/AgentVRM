@@ -16,6 +16,7 @@ type Props = {
   koeiroParam: KoeiroParam;
   koeiromapKey: string;
   voicevoxApiKey: string;                                              // ★追加
+  geminiModel: string;                                                            // ★追加
   onClickClose: () => void;
   onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -23,6 +24,7 @@ type Props = {
   onClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeVoicevoxApiKey: (event: React.ChangeEvent<HTMLInputElement>) => void; // ★追加
+  onChangeGeminiModel: (event: React.ChangeEvent<HTMLSelectElement>) => void;      // ★追加
 };
 export const Settings = ({
   openAiKey,
@@ -30,6 +32,7 @@ export const Settings = ({
   koeiroParam,
   koeiromapKey,
   voicevoxApiKey,           // ★追加
+  geminiModel,              // ★追加
   onClickClose,
   onChangeSystemPrompt,
   onChangeAiKey,
@@ -37,6 +40,7 @@ export const Settings = ({
   onClickResetSystemPrompt,
   onChangeKoeiromapKey,
   onChangeVoicevoxApiKey,   // ★追加
+  onChangeGeminiModel,      // ★追加
 }: Props) => {
   return (
     <div className="absolute z-40 w-full h-full bg-white/95 backdrop-blur ">
@@ -72,6 +76,20 @@ export const Settings = ({
               APIはブラウザから直接アクセスしています。また、APIキーや会話内容はピクシブのサーバには保存されません。
               <br />
               ※利用しているモデルはChatGPT API (GPT-3.5)です。
+            </div>
+          </div>
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">使用するAIモデル</div>
+            <select
+              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+              value={geminiModel}
+              onChange={onChangeGeminiModel}
+            >
+              <option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite（軽量・制限が緩い・おすすめ）</option>
+              <option value="gemini-3.5-flash">Gemini 3.5 Flash（標準）</option>
+            </select>
+            <div className="my-16">
+              会話がすぐエラーになる場合は、制限の緩い「Flash-Lite」をお試しください。
             </div>
           </div>
           <div className="my-40">
