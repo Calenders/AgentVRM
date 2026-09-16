@@ -17,6 +17,9 @@ type Props = {
   koeiromapKey: string;
   voicevoxApiKey: string;                                              // ★追加
   geminiModel: string;                                                            // ★追加
+  // Propsに追加
+  userName: string;
+  onChangeUserName: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClickClose: () => void;
   onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeSystemPrompt: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -55,6 +58,20 @@ export const Settings = ({
         <div className="text-gray-900 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">設定</div>
           <div className="my-24">
+            // UIブロック（OpenAIキー欄の直前あたりに追加）
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">あなたのお名前</div>
+            <input
+              className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
+              type="text"
+              placeholder="例）太郎"
+              value={userName}
+              onChange={onChangeUserName}
+            />
+            <div className="my-16">
+              お名前を入力すると、会話の中で名前を呼んでくれるようになります。
+            </div>
+          </div>
             <div className="my-16 typography-20 font-bold">Google Gemini API キー</div>
             <input
               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
