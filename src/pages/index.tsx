@@ -111,6 +111,7 @@ export default function Home() {
     return () => ws.close();
   }, [viewer, viewer.model]);
 
+  // 修正後
   useEffect(() => {
     if (window.localStorage.getItem("chatVRMParams")) {
       const params = JSON.parse(
@@ -118,6 +119,10 @@ export default function Home() {
       );
       setSystemPrompt(params.systemPrompt ?? SYSTEM_PROMPT);
       setKoeiroParam(params.koeiroParam ?? DEFAULT_PARAM);
+      setOpenAiKey(params.openAiKey ?? "");           // ★追加
+      setVoicevoxApiKey(params.voicevoxApiKey ?? ""); // ★追加
+      setGeminiModel(params.geminiModel ?? "gemini-3.5-flash-lite"); // ★追加
+      setUserName(params.userName ?? "");             // ★追加
     }
   }, []);
 
@@ -125,11 +130,17 @@ export default function Home() {
     process.nextTick(() =>
       window.localStorage.setItem(
         "chatVRMParams",
-        JSON.stringify({ systemPrompt, koeiroParam })
+        JSON.stringify({
+          systemPrompt,
+          koeiroParam,
+          openAiKey,        // ★追加
+          voicevoxApiKey,   // ★追加
+          geminiModel,      // ★追加
+          userName,         // ★追加
+        })
       )
     );
-  }, [systemPrompt, koeiroParam]);
-
+  }, [systemPrompt, koeiroParam, openAiKey, voicevoxApiKey, geminiModel, userName]);
 
   /**
    * 文ごとに音声を直列でリクエストしながら再生する
