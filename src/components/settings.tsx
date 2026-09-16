@@ -58,7 +58,6 @@ export const Settings = ({
         <div className="text-gray-900 max-w-3xl mx-auto px-24 py-64 ">
           <div className="my-24 typography-32 font-bold">設定</div>
           <div className="my-24">
-            // UIブロック（OpenAIキー欄の直前あたりに追加）
           <div className="my-40">
             <div className="my-16 typography-20 font-bold">あなたのお名前</div>
             <input
