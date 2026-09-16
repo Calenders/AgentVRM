@@ -17,7 +17,6 @@ type Props = {
   koeiromapKey: string;
   voicevoxApiKey: string;                                              // ★追加
   geminiModel: string;                                                            // ★追加
-  // Propsに追加
   userName: string;
   onChangeUserName: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClickClose: () => void;
