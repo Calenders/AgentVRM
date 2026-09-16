@@ -20,6 +20,7 @@ export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
+  const [userName, setUserName] = useState(""); // ★追加
   const [openAiKey, setOpenAiKey] = useState("");
   const [koeiromapKey, setKoeiromapKey] = useState("");
   const [voicevoxApiKey, setVoicevoxApiKey] = useState(""); // ★追加
@@ -172,10 +173,14 @@ export default function Home() {
       ];
       setChatLog(messageLog);
 
+      // 修正後
+      const nameInstruction = userName
+        ? `\n\n話している相手の名前は「${userName}」です。会話の中で自然に名前を呼びかけてください。`
+        : "";
       const messages: Message[] = [
         {
           role: "system",
-          content: systemPrompt,
+          content: systemPrompt + nameInstruction,
         },
         ...messageLog,
       ];
@@ -276,6 +281,8 @@ export default function Home() {
           koeiromapKey={koeiromapKey}
           voicevoxApiKey={voicevoxApiKey}                                          // ★追加
           geminiModel={geminiModel}                                                // ★追加
+          userName={userName}                                   // ★追加
+          onChangeUserName={(e) => setUserName(e.target.value)} // ★追加
           onClickClose={() => setShowSettings(false)}
           onChangeAiKey={(e) => setOpenAiKey(e.target.value)}
           onChangeSystemPrompt={(e) => setSystemPrompt(e.target.value)}
