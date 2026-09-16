@@ -35,6 +35,7 @@ export const Settings = ({
   koeiromapKey,
   voicevoxApiKey,           // ★追加
   geminiModel,              // ★追加
+  userName,              // ★追加
   onClickClose,
   onChangeSystemPrompt,
   onChangeAiKey,
@@ -43,6 +44,7 @@ export const Settings = ({
   onChangeKoeiromapKey,
   onChangeVoicevoxApiKey,   // ★追加
   onChangeGeminiModel,      // ★追加
+  onChangeUserName,      // ★追加
 }: Props) => {
   return (
     <div className="absolute z-40 w-full h-full bg-white/95 backdrop-blur ">
