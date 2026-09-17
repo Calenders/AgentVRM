@@ -46,6 +46,13 @@ export const Settings = ({
   onChangeGeminiModel,      // ★追加
   onChangeUserName,      // ★追加
 }: Props) => {
+  const handleClearKeys = () => {
+    if (window.confirm("保存されているAPIキーとお名前などの設定をすべて削除します。よろしいですか？")) {
+      localStorage.removeItem("chatVRMParams");
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="absolute z-40 w-full h-full bg-white/95 backdrop-blur ">
       <div className="absolute m-24">
@@ -137,6 +144,17 @@ export const Settings = ({
                 label="こちらのサイト"
               />
               でGoogleアカウントを使ってAPIキーを取得し、入力してください。
+            </div>
+          </div>
+          <div className="my-40">
+            <button
+              onClick={handleClearKeys}
+              className="px-16 py-8 bg-red-500 hover:bg-red-600 text-white rounded-8 typography-16 font-bold"
+            >
+              この端末に保存された設定・APIキーをすべて削除する
+            </button>
+            <div className="my-16">
+              端末を譲渡・処分する前や、他の人が使う前に押してください。
             </div>
           </div>
         </div>
