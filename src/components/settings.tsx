@@ -82,7 +82,7 @@ export const Settings = ({
             <div className="my-16 typography-20 font-bold">Google Gemini API キー</div>
             <input
               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-              type="text"
+              type="password"
               placeholder="AIza..."
               value={openAiKey}
               onChange={onChangeAiKey}
@@ -133,7 +133,7 @@ export const Settings = ({
             <div className="my-16 typography-20 font-bold">VOICEVOX API キー</div>
             <input
               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
-              type="text"
+              type="password"
               placeholder="..."
               value={voicevoxApiKey}
               onChange={onChangeVoicevoxApiKey}
