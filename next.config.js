@@ -7,6 +7,19 @@ const nextConfig = {
     root: process.env.BASE_PATH || "",
   },
   optimizeFonts: false,
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://generativelanguage.googleapis.com https://api.su-shiki.com https://api.tts.quest;"
+          }
+        ]
+      }
+    ]
+  },
 };
 
 module.exports = nextConfig;
