@@ -173,7 +173,7 @@ export const MessageInput = ({
           </div>
         </div>
         <div className="py-1 bg-secondary text-center text-text-on-secondary text-xs font-kaisei">
-          powered by VRoid, VOICEVOX, ChatGPT API
+          powered by VRoid, VOICEVOX, Gemini API
         </div>
       </div>
     </div>
