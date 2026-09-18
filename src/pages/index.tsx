@@ -35,7 +35,7 @@ export default function Home() {
   const [showSubtitle, setShowSubtitle] = useState(false); // ★ 字幕表示state追加
 
   const [showSettings, setShowSettings] = useState(false);
-
+  const [isVoiceMode, setIsVoiceMode] = useState(false); // ★マイク入力中フラグ
   // ▼▼▼ AudioContext状態監視用 ▼▼▼
   const [audioState, setAudioState] = useState<"suspended" | "running" | "closed" | "uninitialized">("uninitialized");
 
@@ -162,7 +162,9 @@ export default function Home() {
    * アシスタントとの会話を行う
    */
   const handleSendChat = useCallback(
-    async (text: string) => {
+    async (text: string, isVoiceInput?: boolean) => {
+
+      setIsVoiceMode(!!isVoiceInput); // ★今回の会話が音声経由かを記録
 
       // 最初のインタラクションでAudioContextを再開する
       if (isFirstInteraction) {
@@ -275,7 +277,7 @@ export default function Home() {
       <Meta />
       <VrmViewer />
       {showSubtitle && <Subtitle text={subtitle} />}
-      <Menu assistantMessage={assistantMessage} />
+      {!isVoiceMode && <Menu assistantMessage={assistantMessage} />}
       <MessageInputContainer
         isChatProcessing={chatProcessing}
         onChatProcessStart={handleSendChat}
