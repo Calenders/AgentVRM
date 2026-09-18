@@ -4,7 +4,7 @@ import { ViewerContext } from "@/features/vrmViewer/viewerContext";
 
 type Props = {
   isChatProcessing: boolean;
-  onChatProcessStart: (text: string) => void;
+  onChatProcessStart: (text: string, isVoiceInput?: boolean) => void;
   onOpenSettings: () => void;
   showSubtitle: boolean;
   onToggleSubtitle: () => void;
@@ -51,7 +51,7 @@ export const MessageInputContainer = ({
     setIsMicRecording(false);
     setUserMessage((currentText) => {
       if (currentText.trim() !== "") {
-        onChatProcessStart(currentText);
+        onChatProcessStart(currentText, true); // ★マイク経由なのでtrue
       }
       return currentText;
     });
@@ -71,7 +71,7 @@ export const MessageInputContainer = ({
   }, [isMicRecording, speechRecognition]);
 
   const handleClickSendButton = useCallback(() => {
-    onChatProcessStart(userMessage);
+    onChatProcessStart(userMessage, false); // ★テキスト入力なのでfalse
   }, [onChatProcessStart, userMessage]);
 
   // 音声ファイルがアップロードされた時の処理
