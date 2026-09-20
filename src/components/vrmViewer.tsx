@@ -1,19 +1,21 @@
-import { useContext, useCallback } from "react";
+import { useContext, useCallback, useState } from "react";
 import { ViewerContext } from "../features/vrmViewer/viewerContext";
 import { buildUrl } from "@/utils/buildUrl";
 
+const VRM_FILES = {
+  summer: "/Kiyoka_summer.vrm",
+  winter: "/Kiyoka_winter.vrm",
+};
+
 export default function VrmViewer() {
   const { viewer } = useContext(ViewerContext);
+  const [season, setSeason] = useState<"summer" | "winter">("summer");
 
   const canvasRef = useCallback(
     (canvas: HTMLCanvasElement) => {
       if (canvas) {
         viewer.setup(canvas);
-        viewer.loadVrm(
-          buildUrl(
-            process.env.NEXT_PUBLIC_VRM_FILENAME || "/Kiyoka_20241223143815.vrm"
-          )
-        );
+        viewer.loadVrm(buildUrl(VRM_FILES.summer));
 
         // Drag and DropでVRMを差し替え
         canvas.addEventListener("dragover", function (event) {
@@ -50,9 +52,24 @@ export default function VrmViewer() {
     [viewer]
   );
 
+  const handleSeasonToggle = useCallback(() => {
+    const nextSeason = season === "summer" ? "winter" : "summer";
+    setSeason(nextSeason);
+    viewer.loadVrm(buildUrl(VRM_FILES[nextSeason]));
+  }, [season, viewer]);
+
   return (
     <div className={"absolute top-0 left-0 w-screen h-[100svh] -z-10"}>
       <canvas ref={canvasRef} className={"h-full w-full"}></canvas>
+
+      <button
+        onClick={handleSeasonToggle}
+        className={
+          "absolute top-4 right-4 z-10 rounded-full bg-white/80 px-4 py-2 text-sm font-medium shadow-md hover:bg-white"
+        }
+      >
+        {season === "summer" ? "❄️ 冬服にする" : "☀️ 夏服にする"}
+      </button>
     </div>
   );
 }
