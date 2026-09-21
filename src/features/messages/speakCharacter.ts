@@ -4,6 +4,21 @@ import { Viewer } from "../vrmViewer/viewer";
 import { Screenplay } from "./messages";
 import { Talk } from "./messages";
 
+// ★VOICEVOXの読み間違えを補正するための変換リスト
+// 「読ませたい単語」：「そのまま読んでほしいひらがな」の形で追加していきます
+const pronunciationFixMap: Record<string, string> = {
+  "身体": "からだ",
+};
+
+// ★変換リストに従って、テキスト中の単語を読み方に置き換える
+function fixPronunciation(text: string): string {
+  let fixed = text;
+  for (const [word, reading] of Object.entries(pronunciationFixMap)) {
+    fixed = fixed.split(word).join(reading);
+  }
+  return fixed;
+}
+
 /**
  * VOICEVOXで音声合成し、ArrayBufferを返す
  */
@@ -13,7 +28,7 @@ export const fetchAudioVoicevox = async (
 ): Promise<ArrayBuffer | null> => {
   try {
     const res = await synthesizeVoiceVoicevox({
-      text: talk.message,
+      text: fixPronunciation(talk.message), // ★読み方補正を適用
       speakerId: options.speakerId,
       speedScale: options.speedScale,
       apiKey: options.apiKey,
