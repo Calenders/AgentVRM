@@ -36,6 +36,7 @@ export default function Home() {
 
   const [showSettings, setShowSettings] = useState(false);
   const [isVoiceMode, setIsVoiceMode] = useState(false); // ★マイク入力中フラグ
+  const [season, setSeason] = useState<"summer" | "winter">("summer"); // ★追加
   // ▼▼▼ AudioContext状態監視用 ▼▼▼
   const [audioState, setAudioState] = useState<"suspended" | "running" | "closed" | "uninitialized">("uninitialized");
 
@@ -123,6 +124,7 @@ export default function Home() {
       setVoicevoxApiKey(params.voicevoxApiKey ?? ""); // ★追加
       setGeminiModel(params.geminiModel ?? "gemini-3.5-flash-lite"); // ★追加
       setUserName(params.userName ?? "");             // ★追加
+      setSeason(params.season ?? "summer");            // ★追加
     }
   }, []);
 
@@ -137,10 +139,11 @@ export default function Home() {
           voicevoxApiKey,   // ★追加
           geminiModel,      // ★追加
           userName,         // ★追加
+          season,           // ★追加
         })
       )
     );
-  }, [systemPrompt, koeiroParam, openAiKey, voicevoxApiKey, geminiModel, userName]);
+  }, [systemPrompt, koeiroParam, openAiKey, voicevoxApiKey, geminiModel, userName, season]); // ★season追加
 
   /**
    * 文ごとに音声を直列でリクエストしながら再生する
@@ -275,7 +278,7 @@ export default function Home() {
       }}
     >
       <Meta />
-      <VrmViewer />
+      <VrmViewer season={season} /> {/* ★season追加 */}
       {showSubtitle && <Subtitle text={subtitle} />}
       {!isVoiceMode && <Menu assistantMessage={assistantMessage} />}
       <MessageInputContainer
@@ -295,6 +298,8 @@ export default function Home() {
           voicevoxApiKey={voicevoxApiKey}                                          // ★追加
           geminiModel={geminiModel}                                                // ★追加
           userName={userName}                                   // ★追加
+          season={season}                                           {/* ★追加 */}
+          onChangeSeason={setSeason}                                {/* ★追加 */}
           onChangeUserName={(e) => setUserName(e.target.value)} // ★追加
           onClickClose={() => setShowSettings(false)}
           onChangeAiKey={(e) => setOpenAiKey(e.target.value)}
