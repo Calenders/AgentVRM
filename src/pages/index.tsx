@@ -37,6 +37,59 @@ export default function Home() {
   const [showSettings, setShowSettings] = useState(false);
   const [isVoiceMode, setIsVoiceMode] = useState(false); // ★マイク入力中フラグ
   const [season, setSeason] = useState<"summer" | "winter">("summer"); // ★追加
+    // ★季節×時間帯に応じた背景を計算する関数（_document.tsxのロジックと同じ内容）
+  const applySeasonalBg = useCallback(() => {
+    const month = new Date().getMonth() + 1;
+    const hour = new Date().getHours();
+
+    const DAY = "/bg_daytime_house.jpg";
+    const NIGHT = "/bg_night_house.jpg";
+
+    let seasonImage = "/bg_spring.jpg";
+    let seasonKey = "spring";
+    if (month === 3 || month === 4) { seasonImage = "/bg_spring.jpg"; seasonKey = "spring"; }
+    else if (month === 5 || month === 6) { seasonImage = "/bg_early_summer.jpg"; seasonKey = "early_summer"; }
+    else if (month === 7 || month === 8) { seasonImage = "/bg_summer.jpg"; seasonKey = "summer"; }
+    else if (month === 9 || month === 10) { seasonImage = "/bg_autumn.jpg"; seasonKey = "autumn"; }
+    else if (month === 11) { seasonImage = "/bg_late_autumn.jpg"; seasonKey = "late_autumn"; }
+    else { seasonImage = "/bg_winter1.jpg"; seasonKey = "winter"; }
+
+    type Period = [number, number, "day" | "season" | "night"];
+    const schedules: Record<string, Period[]> = {
+      spring:       [[6,10,"day"], [10,15,"season"], [15,18,"day"], [18,30,"night"]],
+      early_summer: [[6,7,"day"],  [7,10,"season"],  [10,18,"day"], [18,30,"night"]],
+      summer:       [[6,15,"day"], [15,19,"season"], [19,30,"night"]],
+      autumn:       [[6,15,"day"], [15,17,"season"], [17,30,"night"]],
+      late_autumn:  [[6,10,"day"], [10,15,"season"], [15,17,"day"], [17,30,"night"]],
+      winter:       [[6,18,"day"], [18,22,"season"], [22,30,"night"]],
+    };
+
+    const h = hour < 6 ? hour + 24 : hour;
+    const periods = schedules[seasonKey];
+    let type: "day" | "season" | "night" = "night";
+    for (const [start, end, t] of periods) {
+      if (h >= start && h < end) {
+        type = t;
+        break;
+      }
+    }
+
+    let bg = DAY;
+    if (type === "season") bg = seasonImage;
+    else if (type === "night") bg = NIGHT;
+
+    document.documentElement.style.setProperty("--seasonal-bg", `url(${bg})`);
+  }, []);
+
+  // ★1分ごとに背景を再チェックする
+  useEffect(() => {
+    applySeasonalBg(); // ページ表示後すぐに1回実行（_document.tsxの結果を上書き確認）
+    const timer = setInterval(applySeasonalBg, 60 * 1000); // 60秒ごと
+    return () => clearInterval(timer);
+  }, [applySeasonalBg]);
+
+
+  
   // ▼▼▼ AudioContext状態監視用 ▼▼▼
   const [audioState, setAudioState] = useState<"suspended" | "running" | "closed" | "uninitialized">("uninitialized");
 
