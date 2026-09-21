@@ -298,8 +298,8 @@ export default function Home() {
           voicevoxApiKey={voicevoxApiKey}                                          // ★追加
           geminiModel={geminiModel}                                                // ★追加
           userName={userName}                                   // ★追加
-          season={season}                                           {/* ★追加 */}
-          onChangeSeason={setSeason}                                {/* ★追加 */}
+          season={season}                                           // ★追加
+          onChangeSeason={setSeason}                                // ★追加
           onChangeUserName={(e) => setUserName(e.target.value)} // ★追加
           onClickClose={() => setShowSettings(false)}
           onChangeAiKey={(e) => setOpenAiKey(e.target.value)}
