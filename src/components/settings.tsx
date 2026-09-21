@@ -18,6 +18,8 @@ type Props = {
   voicevoxApiKey: string;                                              // ★追加
   geminiModel: string;                                                            // ★追加
   userName: string;
+  season: "summer" | "winter";                          // ★追加
+  onChangeSeason: (season: "summer" | "winter") => void; // ★追加
   onChangeUserName: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClickClose: () => void;
   onChangeAiKey: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -36,6 +38,8 @@ export const Settings = ({
   voicevoxApiKey,           // ★追加
   geminiModel,              // ★追加
   userName,              // ★追加
+  season,           // ★追加
+  onChangeSeason,   // ★追加
   onClickClose,
   onChangeSystemPrompt,
   onChangeAiKey,
@@ -79,6 +83,34 @@ export const Settings = ({
               お名前を入力すると、会話の中で名前を呼んでくれるようになります。
             </div>
           </div>
+          <div className="my-40">
+            <div className="my-16 typography-20 font-bold">服装（季節）</div>
+            <div className="flex gap-8">
+              <button
+                onClick={() => onChangeSeason("summer")}
+                className={`px-16 py-8 rounded-8 typography-16 font-bold ${
+                  season === "summer"
+                    ? "bg-primary text-white"
+                    : "bg-surface1 hover:bg-surface1-hover"
+                }`}
+              >
+                ☀️ 夏服
+              </button>
+              <button
+                onClick={() => onChangeSeason("winter")}
+                className={`px-16 py-8 rounded-8 typography-16 font-bold ${
+                  season === "winter"
+                    ? "bg-primary text-white"
+                    : "bg-surface1 hover:bg-surface1-hover"
+                }`}
+              >
+                ❄️ 冬服
+              </button>
+            </div>
+            <div className="my-16">
+              キャラクターの服装を切り替えます。
+            </div>
+          </div>  
             <div className="my-16 typography-20 font-bold">Google Gemini API キー</div>
             <input
               className="text-ellipsis px-16 py-8 w-col-span-2 bg-surface1 hover:bg-surface1-hover rounded-8"
