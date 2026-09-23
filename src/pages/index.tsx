@@ -81,6 +81,58 @@ export default function Home() {
     document.documentElement.style.setProperty("--seasonal-bg", `url(${bg})`);
   }, []);
 
+  // ★今の季節・時間帯・屋内外の状況を、AIに伝える説明文を作る関数
+  const getSceneInstruction = useCallback((): string => {
+    const month = new Date().getMonth() + 1;
+    const hour = new Date().getHours();
+
+    let seasonKey = "spring";
+    if (month === 3 || month === 4) seasonKey = "spring";
+    else if (month === 5 || month === 6) seasonKey = "early_summer";
+    else if (month === 7 || month === 8) seasonKey = "summer";
+    else if (month === 9 || month === 10) seasonKey = "autumn";
+    else if (month === 11) seasonKey = "late_autumn";
+    else seasonKey = "winter";
+
+    type Period = [number, number, "day" | "season" | "night"];
+    const schedules: Record<string, Period[]> = {
+      spring:       [[6,10,"day"], [10,15,"season"], [15,18,"day"], [18,30,"night"]],
+      early_summer: [[6,7,"day"],  [7,10,"season"],  [10,18,"day"], [18,30,"night"]],
+      summer:       [[6,15,"day"], [15,19,"season"], [19,30,"night"]],
+      autumn:       [[6,15,"day"], [15,17,"season"], [17,30,"night"]],
+      late_autumn:  [[6,10,"day"], [10,15,"season"], [15,17,"day"], [17,30,"night"]],
+      winter:       [[6,18,"day"], [18,22,"season"], [22,30,"night"]],
+    };
+
+    const h = hour < 6 ? hour + 24 : hour;
+    const periods = schedules[seasonKey];
+    let type: "day" | "season" | "night" = "night";
+    for (const [start, end, t] of periods) {
+      if (h >= start && h < end) {
+        type = t;
+        break;
+      }
+    }
+
+    // 季節ごとの屋外の景色の説明（★実際の画像の内容に合わせて、必要なら文言を調整してください）
+    const seasonDescriptions: Record<string, string> = {
+      spring: "春、桜吹雪の一本道、青空から花びらが舞い、霞んで見える道の先（晴れています。雨は降っていません）",
+      early_summer: "初夏、湖面から立ち上がる朝靄で、山と空が幻想的に映る静かな湖（晴れています。雨は降っていません）",
+      summer: "真夏の夕暮れ、入道雲と茜色の空、静かな水辺と石畳の小道（晴れています。雨は降っていません）",
+      autumn: "秋、紅葉した山々と澄んだ青空、夕方の柔らかい光（晴れています。雨は降っていません）",
+      late_autumn: "晩秋、霧に沈む山道、白い靄の奥に消えていく落ち葉の積もった道（晴れていません。雨は降っていません）",
+      winter: "冬、満月の夜、雪に覆われた森の奥へ一本の小径が続き、木々の間から青白い月光が差し込んでいる。空には無数の星、足元では雪が淡く輝いている（晴れています。雪は降っていません）",
+    };
+
+    if (type === "day") {
+      return "今、あなたは自宅の部屋の中にいて、日中の明るい時間を過ごしています。";
+    } else if (type === "night") {
+      return "今、あなたは自宅の部屋の中にいて、夜の落ち着いた時間を過ごしています。";
+    } else {
+      return `今、あなたは屋外にいて、${seasonDescriptions[seasonKey]}を眺めています。`;
+    }
+  }, []);
+
   // ★1分ごとに背景を再チェックする
   useEffect(() => {
     applySeasonalBg(); // ページ表示後すぐに1回実行（_document.tsxの結果を上書き確認）
@@ -243,13 +295,15 @@ export default function Home() {
       setChatLog(messageLog);
 
       // 修正後
+            // 修正後
       const nameInstruction = userName
         ? `\n\n話している相手の名前は「${userName}」です。会話の中で自然に名前を呼びかけてください。`
         : "";
+      const sceneInstruction = `\n\n${getSceneInstruction()}この状況を踏まえて、実際に見えている景色と異なる質問をされた場合は、正しい状況をやんわり伝えてください。`;
       const messages: Message[] = [
         {
           role: "system",
-          content: systemPrompt + nameInstruction,
+          content: systemPrompt + nameInstruction + sceneInstruction,
         },
         ...messageLog,
       ];
