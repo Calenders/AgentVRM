@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/interactions`;
 
   try {
-    const response = await fetch(GEMINI_API_URL, {
+        const response = await fetch(GEMINI_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,6 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: JSON.stringify({
         model: model || "gemini-3.5-flash",
         input: conversationText,
+        tools: [{ type: "google_search" }], // ★Google Search Groundingを有効化
       }),
     });
 
