@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: JSON.stringify({
         model: model || "gemini-3.5-flash",
         input: conversationText,
-        tools: [{ type: "google_search" }], // ★Google Search Groundingを有効化
+  //      tools: [{ type: "google_search" }], // ★Google Search Groundingを有効化
       }),
     });
 
