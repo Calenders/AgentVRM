@@ -381,6 +381,28 @@ export default function Home() {
         if (isFirstInteraction) {
           viewer.resumeAudio();
           setIsFirstInteraction(false);
+
+          // ★音声認識の接続を裏側で「暖機」しておく（体感の初回遅延を軽減）
+          const SpeechRecognitionCtor =
+            (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+          if (SpeechRecognitionCtor) {
+            try {
+              const warmupRecognition = new SpeechRecognitionCtor();
+              warmupRecognition.lang = "ja-JP";
+              warmupRecognition.continuous = true;
+              warmupRecognition.start();
+              // 1秒後には停止する（ユーザーには見せず、裏側で接続だけ済ませる）
+              setTimeout(() => {
+                try {
+                  warmupRecognition.stop();
+                } catch (e) {
+                  // 既に停止している場合等は無視
+                }
+              }, 1000);
+            } catch (e) {
+              console.error("[DEBUG] 音声認識の暖機に失敗しました", e);
+            }
+          }
         }
       }}
     >
