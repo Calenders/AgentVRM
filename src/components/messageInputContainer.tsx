@@ -35,6 +35,7 @@ export const MessageInputContainer = ({
   // 修正後
   const handleRecognitionResult = useCallback(
     (event: SpeechRecognitionEvent) => {
+      console.log("[DEBUG] onresult 発火", event.results.length); // ★調査用
       // すべての認識結果（確定分＋認識中の分）をつなげて表示する
       let combinedText = "";
       for (let i = 0; i < event.results.length; i++) {
@@ -48,6 +49,7 @@ export const MessageInputContainer = ({
 
   // 修正後
   const handleRecognitionEnd = useCallback(() => {
+    console.log("[DEBUG] onend 発火（音声認識が終了しました）"); // ★調査用
     setIsMicRecording(false);
     setUserMessage((currentText) => {
       if (currentText.trim() !== "") {
@@ -59,12 +61,13 @@ export const MessageInputContainer = ({
 // 修正後
   const handleClickMicButton = useCallback(() => {
     if (isMicRecording) {
+      console.log("[DEBUG] マイク停止ボタン押下 → recognition.stop()を呼びます"); // ★調査用
       // 録音停止 → その時点までの認識結果を確定して送信する
       speechRecognition?.stop();
       setIsMicRecording(false);
       return;
     }
-
+    console.log("[DEBUG] マイク開始ボタン押下 → recognition.start()を呼びます"); // ★調査用
     setUserMessage("");
     speechRecognition?.start();
     setIsMicRecording(true);
