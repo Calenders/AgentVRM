@@ -51,28 +51,31 @@ export const MessageInputContainer = ({
   const handleRecognitionEnd = useCallback(() => {
     console.log("[DEBUG] onend 発火（音声認識が終了しました）"); // ★調査用
     setIsMicRecording(false);
+    setIsFinalizingSpeech(false); // ★処理中の見た目を解除
     setUserMessage((currentText) => {
       if (currentText.trim() !== "") {
-        onChatProcessStart(currentText, true); // ★マイク経由なのでtrue
+        onChatProcessStart(currentText, true);
       }
       return currentText;
     });
   }, [onChatProcessStart]);
 // 修正後
+  const [isFinalizingSpeech, setIsFinalizingSpeech] = useState(false); // ★停止ボタン後、onend待ちの間trueにする
+
   const handleClickMicButton = useCallback(() => {
     if (isMicRecording) {
       console.log("[DEBUG] マイク停止ボタン押下 → recognition.stop()を呼びます"); // ★調査用
-      // 録音停止 → その時点までの認識結果を確定して送信する
+      setIsFinalizingSpeech(true); // ★ここから「処理中」の見た目にする
       speechRecognition?.stop();
       setIsMicRecording(false);
       return;
     }
+
     console.log("[DEBUG] マイク開始ボタン押下 → recognition.start()を呼びます"); // ★調査用
     setUserMessage("");
     speechRecognition?.start();
     setIsMicRecording(true);
   }, [isMicRecording, speechRecognition]);
-
   const handleClickSendButton = useCallback(() => {
     onChatProcessStart(userMessage, false); // ★テキスト入力なのでfalse
   }, [onChatProcessStart, userMessage]);
@@ -142,7 +145,7 @@ export const MessageInputContainer = ({
     <>
       <MessageInput
         userMessage={userMessage}
-        isChatProcessing={isChatProcessing}
+        isChatProcessing={isChatProcessing || isFinalizingSpeech}
         isMicRecording={isMicRecording}
         onChangeUserMessage={(e) => setUserMessage(e.target.value)}
         onClickMicButton={handleClickMicButton}
