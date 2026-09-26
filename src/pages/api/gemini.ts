@@ -39,24 +39,56 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/interactions`;
 
-  try {
-        const response = await fetch(GEMINI_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-      body: JSON.stringify({
-        model: model || "gemini-3.5-flash",
-        input: conversationText,
-  //      tools: [{ type: "google_search" }], // ★Google Search Groundingを有効化
-      }),
-    });
+  // ★指数バックオフ付きの待機用関数
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    if (!response.ok) {
-      const errorBody = await response.text();
+  const MAX_RETRIES = 4;
+  const RETRY_DELAYS_MS = [1000, 2000, 4000, 8000]; // 1秒, 2秒, 4秒, 8秒
+
+  try {
+    let response: Response | null = null;
+    let lastErrorBody = "";
+
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      response = await fetch(GEMINI_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
+        body: JSON.stringify({
+          model: model || "gemini-3.5-flash",
+          input: conversationText,
+          //      tools: [{ type: "google_search" }], // ★Google Search Groundingを有効化
+        }),
+      });
+
+      if (response.ok) {
+        break; // ★成功したらリトライループを抜ける
+      }
+
+      // 503（一時的な過負荷）の場合のみリトライ、それ以外は即座にエラー扱い
+      if (response.status !== 503) {
+        break;
+      }
+
+      lastErrorBody = await response.text();
+      console.error(
+        `Gemini API 503エラー（${attempt + 1}回目の試行）:`,
+        lastErrorBody
+      );
+
+      if (attempt < MAX_RETRIES) {
+        await sleep(RETRY_DELAYS_MS[attempt]);
+      }
+    }
+
+    if (!response || !response.ok) {
+      const errorBody = lastErrorBody || (response ? await response.text() : "");
       console.error("Gemini Interactions API error body:", errorBody);
-      res.status(response.status).json({ error: "Gemini API側でエラーが発生しました。" });
+      res
+        .status(response?.status || 500)
+        .json({ error: "Gemini API側でエラーが発生しました。しばらくしてから再度お試しください。" });
       return;
     }
 
